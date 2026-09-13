@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ollama Chat</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f0f0f;
+      color: #e5e5e5;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Compact top bar */
+    header {
+      padding: 8px 12px;
+      background: #1a1a1a;
+      border-bottom: 1px solid #333;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    header select, header input[type="text"] {
+      background: #2a2a2a;
+      color: #e5e5e5;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 5px 8px;
+      font-size: 13px;
+    }
+    header select { min-width: 140px; max-width: 200px; }
+    header input[type="text"] { width: 180px; }
+    #status {
+      font-size: 12px;
+      color: #888;
+      margin-left: auto;
+      white-space: nowrap;
+    }
+    #status.ok { color: #4ade80; }
+    #status.err { color: #f87171; }
+    #refresh {
+      background: #333;
+      border: 1px solid #555;
+      color: #ddd;
+      padding: 4px 10px;
+      height: auto;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    #refresh:hover { background: #444; }
+
+    /* Document bar */
+    #doc-bar {
+      padding: 6px 12px;
+      background: #151515;
+      border-bottom: 1px solid #333;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    #doc-bar.visible { display: flex; }
+    #doc-name {
+      color: #93c5fd;
+      max-width: 50%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    #doc-size { color: #888; font-size: 12px; }
+    #clear-doc {
+      background: transparent;
+      border: 1px solid #555;
+      color: #ccc;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      margin-left: auto;
+    }
+    #clear-doc:hover { background: #333; color: #fff; }
+
+    /* Chat takes most of the vertical space */
+    #chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 0;
+    }
+    .msg {
+      max-width: 860px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 12px 16px;
+      border-radius: 10px;
+      line-height: 1.55;
+      word-break: break-word;
+      font-size: 15px;
+      position: relative;
+    }
+    .msg-content {
+      white-space: pre-wrap;
+    }
+    .user {
+      background: #2563eb;
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 3px;
+    }
+    .assistant {
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-bottom-left-radius: 3px;
+    }
+    .assistant.streaming::after {
+      content: "▋";
+      animation: blink 1s step-end infinite;
+      color: #888;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* Action buttons under each message */
+    .msg-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      opacity: 0.55;
+      transition: opacity 0.15s;
+    }
+    .msg:hover .msg-actions,
+    .msg:focus-within .msg-actions {
+      opacity: 1;
+    }
+    .msg-actions button {
+      background: transparent;
+      border: 1px solid transparent;
+      color: inherit;
+      padding: 3px 8px;
+      height: auto;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      opacity: 0.85;
+    }
+    .user .msg-actions button {
+      color: rgba(255, 255, 255, 0.9);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+    .user .msg-actions button:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+    .assistant .msg-actions button {
+      color: #aaa;
+      border-color: #444;
+    }
+    .assistant .msg-actions button:hover {
+      background: #2a2a2a;
+      color: #eee;
+      border-color: #666;
+    }
+    .msg-actions button.copied {
+      color: #4ade80 !important;
+      border-color: #4ade80 !important;
+    }
+
+    /* Compact bottom input */
+    footer {
+      padding: 10px 12px;
+      background: #1a1a1a;
+      border-top: 1px solid #333;
+      flex-shrink: 0;
+    }
+    #form {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+    #input {
+      flex: 1;
+      background: #2a2a2a;
+      color: #e5e5e5;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 15px;
+      resize: none;
+      min-height: 44px;
+      max-height: 140px;
+      line-height: 1.4;
+    }
+    #input:focus { outline: none; border-color: #2563eb; }
+
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0 18px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 500;
+      height: 44px;
+    }
+    button:hover { background: #1d4ed8; }
+    button:disabled { background: #444; cursor: not-allowed; }
+
+    #upload-btn {
+      background: #333;
+      border: 1px solid #555;
+      color: #ddd;
+      padding: 0 12px;
+      height: 44px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+    #upload-btn:hover { background: #444; }
+    #file-input { display: none; }
+
+    .empty {
+      text-align: center;
+      color: #666;
+      margin: auto 0;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <select id="model"></select>
+    <input id="host" type="text" value="http://localhost:11434" placeholder="Ollama URL">
+    <button id="refresh" title="Refresh models">↻</button>
+    <span id="status">Connecting…</span>
+  </header>
+
+  <div id="doc-bar">
+    <span>📄</span>
+    <span id="doc-name"></span>
+    <span id="doc-size"></span>
+    <button id="clear-doc" type="button">Remove</button>
+  </div>
+
+  <div id="chat">
+    <div class="empty">
+      Select a model and start chatting<br>
+      <small style="color:#555">Upload a document to review it with the AI</small>
+    </div>
+  </div>
+
+  <footer>
+    <form id="form">
+      <input type="file" id="file-input" accept=".txt,.md,.csv,.json,.log,.py,.js,.ts,.html,.css,.xml,.yml,.yaml,.toml,.ini,.cfg,.conf,.sh,.sql,.r,.java,.c,.cpp,.h,.go,.rs,.php,.rb,.swift,.kt,.scala,.pl,.lua,.tex,.bib">
+      <button type="button" id="upload-btn" title="Upload a document">📎 Upload</button>
+      <textarea id="input" placeholder="Message…" rows="1"></textarea>
+      <button type="submit" id="send">Send</button>
+    </form>
+  </footer>
+
+  <script>
+    const chatEl = document.getElementById('chat');
+    const modelEl = document.getElementById('model');
+    const hostEl = document.getElementById('host');
+    const statusEl = document.getElementById('status');
+    const inputEl = document.getElementById('input');
+    const sendBtn = document.getElementById('send');
+    const form = document.getElementById('form');
+    const fileInput = document.getElementById('file-input');
+    const uploadBtn = document.getElementById('upload-btn');
+    const docBar = document.getElementById('doc-bar');
+    const docNameEl = document.getElementById('doc-name');
+    const docSizeEl = document.getElementById('doc-size');
+    const clearDocBtn = document.getElementById('clear-doc');
+
+    let messages = [];
+    let streaming = false;
+    let documentContent = null;
+    let documentName = null;
+
+    function getHost() {
+      return hostEl.value.replace(/\/$/, '');
+    }
+
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function updateDocBar() {
+      if (documentContent) {
+        docNameEl.textContent = documentName;
+        docSizeEl.textContent = '(' + formatSize(new Blob([documentContent]).size) + ')';
+        docBar.classList.add('visible');
+      } else {
+        docBar.classList.remove('visible');
+      }
+    }
+
+    function clearDocument() {
+      documentContent = null;
+      documentName = null;
+      fileInput.value = '';
+      updateDocBar();
+    }
+
+    uploadBtn.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      if (file.size > 2 * 1024 * 1024) {
+        alert('File is too large (max 2 MB). Please use a smaller document.');
+        fileInput.value = '';
+        return;
+      }
+
+      try {
+        const text = await file.text();
+        documentContent = text;
+        documentName = file.name;
+        updateDocBar();
+
+        const empty = chatEl.querySelector('.empty');
+        if (empty) empty.remove();
+        addMessage('assistant', `📄 Document "${file.name}" loaded (${formatSize(file.size)}).\nYou can now ask me to review, summarize, or answer questions about it.`);
+      } catch (err) {
+        alert('Could not read the file. Please use a plain text file.');
+        fileInput.value = '';
+      }
+    });
+
+    clearDocBtn.addEventListener('click', clearDocument);
+
+    async function loadModels() {
+      statusEl.textContent = 'Loading models…';
+      statusEl.className = '';
+      try {
+        const res = await fetch(`${getHost()}/api/tags`);
+        if (!res.ok) throw new Error(res.status);
+        const data = await res.json();
+        modelEl.innerHTML = '';
+        (data.models || []).forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m.name;
+          opt.textContent = m.name;
+          modelEl.appendChild(opt);
+        });
+        if (!data.models?.length) {
+          modelEl.innerHTML = '<option value="">No models found</option>';
+        }
+        statusEl.textContent = 'Ready';
+        statusEl.className = 'ok';
+      } catch (e) {
+        statusEl.textContent = 'Cannot reach Ollama';
+        statusEl.className = 'err';
+        modelEl.innerHTML = '<option value="">—</option>';
+      }
+    }
+
+    async function copyText(text, btn) {
+      try {
+        await navigator.clipboard.writeText(text);
+        const original = btn.innerHTML;
+        btn.classList.add('copied');
+        btn.innerHTML = '✓ Copied';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = original;
+        }, 1500);
+      } catch (err) {
+        // Fallback for older browsers / non-secure contexts
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand('copy');
+          const original = btn.innerHTML;
+          btn.classList.add('copied');
+          btn.innerHTML = '✓ Copied';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = original;
+          }, 1500);
+        } catch (e) {
+          alert('Copy failed');
+        }
+        document.body.removeChild(ta);
+      }
+    }
+
+    function addMessage(role, content, isStreaming = false) {
+      const empty = chatEl.querySelector('.empty');
+      if (empty) empty.remove();
+
+      const div = document.createElement('div');
+      div.className = `msg ${role}` + (isStreaming ? ' streaming' : '');
+
+      const contentEl = document.createElement('div');
+      contentEl.className = 'msg-content';
+      contentEl.textContent = content;
+      div.appendChild(contentEl);
+
+      // Action buttons (skip while still streaming)
+      if (!isStreaming) {
+        const actions = document.createElement('div');
+        actions.className = 'msg-actions';
+
+        if (role === 'assistant') {
+          const copyBtn = document.createElement('button');
+          copyBtn.type = 'button';
+          copyBtn.innerHTML = '📋 Copy';
+          copyBtn.title = 'Copy response';
+          copyBtn.addEventListener('click', () => copyText(contentEl.textContent, copyBtn));
+          actions.appendChild(copyBtn);
+        }
+
+        if (role === 'user') {
+          const copyBtn = document.createElement('button');
+          copyBtn.type = 'button';
+          copyBtn.innerHTML = '📋 Copy';
+          copyBtn.title = 'Copy message';
+          copyBtn.addEventListener('click', () => copyText(contentEl.textContent, copyBtn));
+          actions.appendChild(copyBtn);
+
+          const editBtn = document.createElement('button');
+          editBtn.type = 'button';
+          editBtn.innerHTML = '✏️ Edit';
+          editBtn.title = 'Edit & re-run';
+          editBtn.addEventListener('click', () => {
+            inputEl.value = contentEl.textContent;
+            inputEl.style.height = 'auto';
+            inputEl.style.height = Math.min(inputEl.scrollHeight, 140) + 'px';
+            inputEl.focus();
+            // Place cursor at end
+            inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length);
+          });
+          actions.appendChild(editBtn);
+
+          const rerunBtn = document.createElement('button');
+          rerunBtn.type = 'button';
+          rerunBtn.innerHTML = '↻ Re-run';
+          rerunBtn.title = 'Send this message again';
+          rerunBtn.addEventListener('click', () => {
+            if (streaming) return;
+            sendMessage(contentEl.textContent);
+          });
+          actions.appendChild(rerunBtn);
+        }
+
+        div.appendChild(actions);
+      }
+
+      chatEl.appendChild(div);
+      chatEl.scrollTop = chatEl.scrollHeight;
+      return div;
+    }
+
+    // After streaming finishes, attach the action buttons
+    function attachActions(div, role, content) {
+      if (div.querySelector('.msg-actions')) return;
+
+      const actions = document.createElement('div');
+      actions.className = 'msg-actions';
+
+      if (role === 'assistant') {
+        const copyBtn = document.createElement('button');
+        copyBtn.type = 'button';
+        copyBtn.innerHTML = '📋 Copy';
+        copyBtn.title = 'Copy response';
+        copyBtn.addEventListener('click', () => {
+          const text = div.querySelector('.msg-content')?.textContent || content;
+          copyText(text, copyBtn);
+        });
+        actions.appendChild(copyBtn);
+      }
+
+      div.appendChild(actions);
+    }
+
+    async function sendMessage(text) {
+      if (!text.trim() || streaming) return;
+
+      const model = modelEl.value;
+      if (!model) {
+        alert('Please select a model first');
+        return;
+      }
+
+      let apiMessages = [...messages];
+
+      if (documentContent) {
+        const systemMsg = {
+          role: 'system',
+          content: `You are a helpful assistant. The user has uploaded a document named "${documentName}" for you to review.\n\nHere is the full content of the document:\n\n---\n${documentContent}\n---\n\nPlease answer questions about this document, summarize it, review it, or do whatever the user asks.`
+        };
+        apiMessages = [systemMsg, ...apiMessages];
+      }
+
+      apiMessages.push({ role: 'user', content: text });
+      messages.push({ role: 'user', content: text });
+
+      addMessage('user', text);
+      inputEl.value = '';
+      inputEl.style.height = 'auto';
+
+      streaming = true;
+      sendBtn.disabled = true;
+      const assistantDiv = addMessage('assistant', '', true);
+      const contentEl = assistantDiv.querySelector('.msg-content');
+
+      try {
+        const res = await fetch(`${getHost()}/api/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model,
+            messages: apiMessages,
+            stream: true
+          })
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let full = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n').filter(l => l.trim());
+
+          for (const line of lines) {
+            try {
+              const json = JSON.parse(line);
+              if (json.message?.content) {
+                full += json.message.content;
+                contentEl.textContent = full;
+                chatEl.scrollTop = chatEl.scrollHeight;
+              }
+            } catch {}
+          }
+        }
+
+        assistantDiv.classList.remove('streaming');
+        messages.push({ role: 'assistant', content: full });
+        attachActions(assistantDiv, 'assistant', full);
+      } catch (e) {
+        contentEl.textContent = `Error: ${e.message}`;
+        assistantDiv.classList.remove('streaming');
+        messages.pop();
+        attachActions(assistantDiv, 'assistant', contentEl.textContent);
+      } finally {
+        streaming = false;
+        sendBtn.disabled = false;
+        inputEl.focus();
+      }
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      sendMessage(inputEl.value);
+    });
+
+    inputEl.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage(inputEl.value);
+      }
+    });
+
+    inputEl.addEventListener('input', () => {
+      inputEl.style.height = 'auto';
+      inputEl.style.height = Math.min(inputEl.scrollHeight, 140) + 'px';
+    });
+
+    document.getElementById('refresh').addEventListener('click', loadModels);
+    hostEl.addEventListener('change', loadModels);
+
+    loadModels();
+  </script>
+</body>
+</html>
