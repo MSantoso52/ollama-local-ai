@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=HTTP Server with Browser
+Comment=Starts Ollama Chat on HTTP server and opens the page in Brave
+#Exec=/usr/bin/sh -c "cd /home/mulyo/Applications/Ollama/ && python -m http.server 8080 & sleep 1.0 && /usr/bin/brave http://localhost:8080/Applications/Ollama/ollama-chat-02.html"
+Exec=/usr/bin/sh -c "python -m http.server 8080 & sleep 1.0 && /usr/bin/brave http://localhost:8080/Applications/Ollama/ollama-chat-03.html"
+Icon=/home/mulyo/Applications/Ollama/ollama2.png
+Terminal=false
+Type=Application
+Categories=Utility;Network;
