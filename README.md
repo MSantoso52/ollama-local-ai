@@ -48,13 +48,10 @@ This project aims to build a locally-trained, customizable AI chat agent powered
 
    * **Model Management:**  You're responsible for keeping the Ollama model up-to-date and potentially retraining it if the cloud provider changes its models (though this is currently not a big concern for Ollama). 
 
-
-
 4. **Technical Effort & Management** 
 
    * **Setup & Troubleshooting:**  Setting up Ollama, configuring the environment, and troubleshooting occasional bugs can require technical proficiency.
    * **Running on Lower-Powered Devices** – If a local model is used by a phone, the performance may be limited. 
-
 
 5. **Access to Larger Models:**
 
