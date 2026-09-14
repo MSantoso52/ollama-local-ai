@@ -50,7 +50,7 @@ This project aims to build a locally-trained, customizable AI chat agent powered
     Build html to create AI `ollama-chat.desktop` chat on web browser (Brave)
 
 * **Wrap it all hence excutable:**
-    Build 'ollama-chat-03.html' for user interaction
+    Build `ollama-chat-03.html` for user interaction
 
 ## Pros And Cons
 ### Pros
@@ -103,3 +103,6 @@ It excels when:
 
 *   Advanced NLP features and scalability are required. 
 *   Limited computing and budget.
+
+## Web AI-Chat
+![ollama-loacl-ai](path/to/video.mp4)
