@@ -105,4 +105,4 @@ It excels when:
 *   Limited computing and budget.
 
 ## Web AI-Chat
-![ollama-local-ai](ollama-web-chat.mp4)
+<video src="ollama-we-char.mp4" autoplay loop muted playsinline controls width="100%"></video>
