@@ -36,10 +36,10 @@ This project aims to build a locally-trained, customizable AI chat agent powered
       }
       ```
   ```
-  * **Build AI-Chat interface in simple html**
+* **Build AI-Chat interface in simple html**
     Build html to create AI `ollama-chat.desktop` chat on web browser (Brave)
 
-  * **Wrap it all hence excutable**
+* **Wrap it all hence excutable**
     Build 'ollama-chat-03.html' for user interaction
 
 ## Why it important
