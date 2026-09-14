@@ -26,16 +26,21 @@ This project aims to build a locally-trained, customizable AI chat agent powered
   ```bash
   ollama run gemma3:1b
   >>> create hello world in
-    ```c
-    #include <stdio.h>
+      ```c
+      #include <stdio.h>
 
-    int main() {
-      printf("Hello, world!\n");
+      int main() {
+        printf("Hello, world!\n");
 
-      return 0;
-    }
-    ```
+        return 0;
+      }
+      ```
   ```
+  * **Build AI-Chat interface in simple html**
+    Build html to create AI `ollama-chat.desktop` chat on web browser (Brave)
+
+  * **Wrap it all hence excutable**
+    Build 'ollama-chat-03.html' for user interaction
 
 ## Why it important
 * **Data Privacy & Ownership:** No reliance on cloud services means users control their data. This is critical for industries handling sensitive information or concerned about privacy regulations (GDPA).
@@ -73,7 +78,7 @@ This project aims to build a locally-trained, customizable AI chat agent powered
    * **Advanced NLP Understanding:** Local models, even the best, are less flexible and capable than the larger, more intricate LLMs behind cloud services (like GPT-4 or PaLM 2). 
 
 2.  **Computational Resources** 
-   * **Hardware Requirements:** Local LLMs, even small ones, consume considerable computing power (CPU & memory).   A machine not equipped with high-end graphics card may struggle with larger models. 
+    * **Hardware Requirements:** Local LLMs, even small ones, consume considerable computing power (CPU & memory).   A machine not equipped with high-end graphics card may struggle with larger models. 
 
 3. **Maintenance and Updates** 
 
