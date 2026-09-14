@@ -27,8 +27,8 @@ This project aims to build a locally-trained, customizable AI chat agent powered
 
 2. **Cold Start & Reduced Latency (potentially):** While Ollama models aren’t currently state-of-the-art, the goal is to get a faster, more stable model.
 
-  * **Real-Time Response**: Your data and conversations take less time to load
-  * **Lower costs**: Your API costs will significantly decrease. 
+   * **Real-Time Response**: Your data and conversations take less time to load
+   * **Lower costs**: Your API costs will significantly decrease. 
 
 3. **Customization & Training Data:**
 
@@ -55,7 +55,7 @@ This project aims to build a locally-trained, customizable AI chat agent powered
 
 5. **Access to Larger Models:**
 
-  * **Availability Restrictions**: Large, state-of-the-art LLMs may not be publicly available for local download in a usable format.
+   * **Availability Restrictions**: Large, state-of-the-art LLMs may not be publicly available for local download in a usable format.
 
 ## Conclusion
 Local AI shines when:
