@@ -105,4 +105,4 @@ It excels when:
 *   Limited computing and budget.
 
 ## Web AI-Chat
-![ollama-loacl-ai](path/to/video.mp4)
+![ollama-local-ai](ollama-web-chat.mp4)
