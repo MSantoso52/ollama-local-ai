@@ -5,6 +5,37 @@ Deploying AI chat app using free AI models locally
 This project aims to build a locally-trained, customizable AI chat agent powered by Open Assistant’s Ollama.  Instead of relying solely on cloud-based LLM APIs like OpenAI’s ChatGPT, this project focuses on leveraging open-source technology, reducing latency concerns, data privacy, and providing users with more control and flexibility over the AI model’s behaviour and knowledge base.  It’s about getting a powerful, on-device chatbot without needing to constantly connect to an internet server.
 
 ## Prerequisites And Requirements
+* **Install ollama on your system (cachyos)**
+  ```bash
+  curl -fsSL https://ollama.com/install.sh | sh
+
+  ollama --version
+  ollama version is 0.33.3
+  ```
+* **Download free AI model**
+  Downloading free AI model considering VRAM on your hardware (my hardware Lenovo T460 with 16 Gb RAM), I choose use CPU only from this I choose gemma2:1b
+  ```bash
+  ollama run gemma3:1b
+
+  ollama ls
+  NAME                   ID              SIZE      MODIFIED
+  gemma3:1b              8648f39daa8f    815 MB    30 hours ago
+  ```
+* **Check downloaded AI Model**
+  Using ai terminal to check if chat is working
+  ```bash
+  ollama run gemma3:1b
+  >>> create hello world in
+    ```c
+    #include <stdio.h>
+
+    int main() {
+      printf("Hello, world!\n");
+
+      return 0;
+    }
+    ```
+  ```
 
 ## Why it important
 * **Data Privacy & Ownership:** No reliance on cloud services means users control their data. This is critical for industries handling sensitive information or concerned about privacy regulations (GDPA).
