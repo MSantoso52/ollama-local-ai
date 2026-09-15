@@ -60,7 +60,10 @@ This project aims to build a locally-trained, customizable AI chat agent powered
       ```
   ```
 * **Build AI-Chat interface in simple html:**
-    Build html to create AI `ollama-chat-03.html` chat on web browser (Brave)
+    Build html to create AI `ollama-chat-03.html` chat on web browser (Brave) and using `python http.server` to run the web at port 800
+    ```bash
+    python -m http.server 8080
+    ``` 
 
 * **Wrap it all hence excutable:**
     Build `ollama-chat.desktop` for user interaction
