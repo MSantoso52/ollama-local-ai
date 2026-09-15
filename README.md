@@ -1,6 +1,6 @@
 # ollama-local-ai
 Deploying AI chat app using free AI models locally
-![ollama-video](https://github.com/MSantoso52/ollama-local-ai/issues/1#issue-5456021742)
+![ollama-video](ollama-web-chat.mp4)
 
 ## Project Overview
 This project aims to build a locally-trained, customizable AI chat agent powered by Open Assistant’s Ollama.  Instead of relying solely on cloud-based LLM APIs like OpenAI’s ChatGPT, this project focuses on leveraging open-source technology, reducing latency concerns, data privacy, and providing users with more control and flexibility over the AI model’s behaviour and knowledge base.  It’s about getting a powerful, on-device chatbot without needing to constantly connect to an internet server.
