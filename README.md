@@ -36,7 +36,7 @@ This project aims to build a locally-trained, customizable AI chat agent powered
 
 ## Project Flow
 * **Download free AI model**
-  Downloading free AI model considering VRAM on your hardware (my hardware Lenovo T460 with 16 Gb RAM), I choose use CPU only from this I choose gemma2:1b
+  Downloading free AI model considering VRAM on your hardware (my hardware Lenovo T460 with 16 Gb RAM), I choose use CPU only from this I choose gemma3:1b
   ```bash
   ollama run gemma3:1b
 
@@ -48,7 +48,7 @@ This project aims to build a locally-trained, customizable AI chat agent powered
   Using ai terminal to check if chat is working
   ```bash
   ollama run gemma3:1b
-  >>> create hello world in
+  >>> create hello world in c
       ```c
       #include <stdio.h>
 
@@ -60,10 +60,10 @@ This project aims to build a locally-trained, customizable AI chat agent powered
       ```
   ```
 * **Build AI-Chat interface in simple html:**
-    Build html to create AI `ollama-chat.desktop` chat on web browser (Brave)
+    Build html to create AI `ollama-chat-03.html` chat on web browser (Brave)
 
 * **Wrap it all hence excutable:**
-    Build `ollama-chat-03.html` for user interaction
+    Build `ollama-chat.desktop` for user interaction
 
 ## Pros And Cons
 ### Pros
