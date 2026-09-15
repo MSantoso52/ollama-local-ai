@@ -112,8 +112,8 @@ It excels when:
 *   Limited computing and budget.
 
 ## Web AI-Chat
-https://github.com/MSantoso52/ollama-local-ai/blob/main/ollama-web-chat.mp4
+
 
 <video autoplay loop muted playsinline width="100%">
-  <source src="ollama-web-chat.mp4" type="video/mp4">
+  <source src="https://github.com/MSantoso52/ollama-local-ai/blob/main/ollama-web-chat.mp4" type="video/mp4">
 </video>
