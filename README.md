@@ -1,5 +1,6 @@
 # ollama-local-ai
 Deploying AI chat app using free AI models locally
+ollama-web-chat.mp4
 
 <video src="https://github.com/MSantoso52/ollama-local-ai/blob/main/ollama-web-chat.mp4" autoplay loop muted playsinline controls width="100%"></video>
 
