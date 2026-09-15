@@ -15,10 +15,10 @@ This project aims to build a locally-trained, customizable AI chat agent powered
 ## Prerequisites And Requirements
 ### Requirements
 * **Hardware - Essential**
-  * ***RAM*** *Minimum* 8GB is advisable for initial setups. 16-32GB is significantly easier for running multiple models and with larger texts.
-  * ***VRAM*** Important, especially for large language models.  As of now, a relatively strong VRAM card is required but newer GPUs are being released to support 4k VRAM and larger models are gaining relevance.
+  * **RAM** *Minimum* 8GB is advisable for initial setups. 16-32GB is significantly easier for running multiple models and with larger texts.
+  * **VRAM** Important, especially for large language models.  As of now, a relatively strong VRAM card is required but newer GPUs are being released to support 4k VRAM and larger models are gaining relevance.
   * **CPU:** Modern CPU with multiple cores – 4 cores/8 cores is a good starting point, 8 or more cores will give it an edge.
-  * ***Storage*** At least 20 GB available. Ollama uses a substantial amount of space to the local LLMs. You'll want enough to accommodate the LLMs, the code you’ll be running.
+  * **Storage** At least 20 GB available. Ollama uses a substantial amount of space to the local LLMs. You'll want enough to accommodate the LLMs, the code you’ll be running.
 ### Prerequisutes
 * **Install ollama on your system (cachyos)**
   ```bash
@@ -112,6 +112,8 @@ It excels when:
 *   Limited computing and budget.
 
 ## Web AI-Chat
+https://github.com/MSantoso52/ollama-local-ai/blob/main/ollama-web-chat.mp4
+
 <video autoplay loop muted playsinline width="100%">
   <source src="ollama-web-chat.mp4" type="video/mp4">
 </video>
