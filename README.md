@@ -119,3 +119,5 @@ It excels when:
 
 *   Advanced NLP features and scalability are required. 
 *   Limited computing and budget.
+
+  https://github.com/user-attachments/assets/c6aba8b4-f768-40a5-b93e-784f49145698
